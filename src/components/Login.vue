@@ -62,11 +62,12 @@ export default {
             // 1.验证校验规则
             this.$refs.loginFormRef.validate(async valid => {
                 if (!valid) return;  // 验证失败
-                const {data: res} = await this.$http.post("test", this.loginForm);   // 访问后台并提交数据，由于在data().return中定义了表单数据对象为loginForm，所以提交的数据为this.loginForm
+                const {data: res} = await this.$http.post("login", this.loginForm);   // 访问后台并提交数据，由于在data().return中定义了表单数据对象为loginForm，所以提交的数据为this.loginForm
                 if (res.flag == "ok") {
                     this.$message.success("操作成功");  // 信息提示
+                    window.sessionStorage.setItem("user", res.user);     //将登陆的user存储在session中
                     this.$router.push({path: "/home"});  // 路由跳转
-                    console.log(res.user);
+
                 } else {
                     this.$message.error("操作失败");
                 }
