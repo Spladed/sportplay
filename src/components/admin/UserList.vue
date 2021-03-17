@@ -40,9 +40,11 @@
                     <el-table-column label="操作">
                         <template slot-scope="scope">
                             <!-- 修改 -->
-                            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
+                            <el-button type="primary" icon="el-icon-edit" size="mini"
+                                       @click="showEditDialog(scope.row.id)"></el-button>
                             <!-- 删除 -->
-                            <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteUser(scope.row.id)"></el-button>
+                            <el-button type="danger" icon="el-icon-delete" size="mini"
+                                       @click="deleteUser(scope.row.id)"></el-button>
                             <!-- 权限 -->
                             <el-tooltip effect="dark" content="分配权限" placement="top-start" :enterable="false">
                                 <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
@@ -50,6 +52,19 @@
                         </template>
                     </el-table-column>
                 </el-table>
+
+                <!--分页组件 size-change每页最大数发生变化时触发 current-change当前页数变化时触发 layout功能组件-->
+                <div>
+                    <el-pagination
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page="queryInfo.pageNum"
+                            :page-sizes="[1, 2, 5, 10]"
+                            :page-size="queryInfo.pageSize"
+                            layout="total, sizes, prev, pager, next, jumper"
+                            :total="total">
+                    </el-pagination>
+                </div>
             </el-row>
         </el-card>
     </div>
@@ -76,9 +91,19 @@ export default {
         // 获取所有用户
         async getUserList() {
             const {data: res} = await this.$http.get("alluser", {params: this.queryInfo});
-            this.userList = res.data;
-            this.total = res.numbers;
+            this.userList = res.data;       //用户列表数据
+            this.total = res.numbers;       //总用户数
         },
+        // pageSize的触发动作
+        handleSizeChange(newSize) {
+            this.queryInfo.pageSize = newSize;
+            this.getUserList();
+        },
+        // pageNum的触发动作
+        handleCurrentChange(newPage) {
+            this.queryInfo.pageNum = newPage;
+            this.getUserList();
+        }
     },
 }
 </script>
