@@ -34,7 +34,7 @@
                         <!--作用域插槽-->
                         <template slot-scope="scope">
                             <!-- scope.row 每一行封存的数据-->
-                            <el-switch v-model="scope.row.state"></el-switch>
+                            <el-switch v-model="scope.row.state" @change="userStateChange(scope.row)"></el-switch>
                         </template>
                     </el-table-column>
                     <el-table-column label="操作">
@@ -103,6 +103,14 @@ export default {
         handleCurrentChange(newPage) {
             this.queryInfo.pageNum = newPage;
             this.getUserList();
+        },
+        async userStateChange(userInfo) {
+            const {data: res} = await this.$http.put(`userstate?id=${userInfo.id}&state=${userInfo.state}`);
+            if (res != "success") {
+                userInfo.id = !userInfo.id;
+                return this.$message.error("操作失败");
+            }
+            this.$message.success("操作成功");
         }
     },
 }
