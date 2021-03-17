@@ -21,6 +21,8 @@
                 <el-col :span="4">
                     <el-button type="primary" @click="addDialogVisible = true">添加用户</el-button>
                 </el-col>
+
+                <span>{{userList}}</span>
             </el-row>
         </el-card>
     </div>
@@ -33,17 +35,24 @@ export default {
     },
     data() {
         return {
-
+            //  查询信息实体
+            queryInfo: {
+                query: "",  //查询信息
+                pageNum: 1,     //当前页
+                pageSize: 5,    //每页最大数
+            },
+            userList: [],    //用户列表
+            total: 0,    //总记录数
         }
     },
     methods: {
         // 获取所有用户
-        getUserList() {
-            console.log(123);
+        async getUserList() {
+            const {data: res} = await this.$http.get("alluser", {params: this.queryInfo});
+            this.userList=res.data;
+            this.total=res.numbers;
         },
-
-    }
-
+    },
 }
 </script>
 
