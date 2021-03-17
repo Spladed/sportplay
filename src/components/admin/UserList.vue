@@ -22,7 +22,34 @@
                     <el-button type="primary" @click="addDialogVisible = true">添加用户</el-button>
                 </el-col>
 
-                <span>{{userList}}</span>
+                <!--用户列表 border边框 stripe隔行变色-->
+                <el-table :data="userList" border stripe>
+                    <!--索引列-->
+                    <el-table-column type="index"></el-table-column>
+                    <el-table-column label="用户名" prop="username"></el-table-column>
+                    <el-table-column label="邮箱" prop="email"></el-table-column>
+                    <el-table-column label="密码" prop="password"></el-table-column>
+                    <el-table-column label="角色" prop="role"></el-table-column>
+                    <el-table-column label="状态" prop="state">
+                        <!--作用域插槽-->
+                        <template slot-scope="scope">
+                            <!-- scope.row 每一行封存的数据-->
+                            <el-switch v-model="scope.row.state"></el-switch>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <!-- 修改 -->
+                            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
+                            <!-- 删除 -->
+                            <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteUser(scope.row.id)"></el-button>
+                            <!-- 权限 -->
+                            <el-tooltip effect="dark" content="分配权限" placement="top-start" :enterable="false">
+                                <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+                            </el-tooltip>
+                        </template>
+                    </el-table-column>
+                </el-table>
             </el-row>
         </el-card>
     </div>
@@ -49,8 +76,8 @@ export default {
         // 获取所有用户
         async getUserList() {
             const {data: res} = await this.$http.get("alluser", {params: this.queryInfo});
-            this.userList=res.data;
-            this.total=res.numbers;
+            this.userList = res.data;
+            this.total = res.numbers;
         },
     },
 }
